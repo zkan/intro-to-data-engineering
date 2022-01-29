@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `analytics.dim_order` (
     order_status STRING
 );
 
--- Transformation (using Merge)
+-- Data Transformation (using Merge)
 
 MERGE
   `analytics.fact_payment` f
