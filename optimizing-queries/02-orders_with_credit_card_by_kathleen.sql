@@ -14,6 +14,7 @@ WITH stg_order_with_payment AS (
   ON
     sp.orderid = jso.id
 ),
+
 stg_customer_with_order AS (
   SELECT
     CONCAT(jsc.first_name, ' ', jsc.last_name) AS name,
