@@ -1,6 +1,6 @@
 -- Denormalization: Fact and Dimension Tables
 
-CREATE TABLE IF NOT EXISTS `public.fact_payment` (
+CREATE TABLE IF NOT EXISTS `analytics.fact_payment` (
     payment_id INTEGER,
     order_id INTEGER,
     user_id INTEGER,
@@ -9,12 +9,12 @@ CREATE TABLE IF NOT EXISTS `public.fact_payment` (
     amount FLOAT64
 );
 
-CREATE TABLE IF NOT EXISTS `public.dim_customer` (
+CREATE TABLE IF NOT EXISTS `analytics.dim_customer` (
     user_id INTEGER,
     name STRING
 );
 
-CREATE TABLE IF NOT EXISTS `public.dim_order` (
+CREATE TABLE IF NOT EXISTS `analytics.dim_order` (
     order_id INTEGER,
     order_date STRING,
     order_status STRING
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `public.dim_order` (
 -- Transformation (using Merge)
 
 MERGE
-  `public.fact_payment` f
+  `analytics.fact_payment` f
 USING
   (
     SELECT
@@ -61,7 +61,7 @@ THEN
   );
 
 MERGE
-  `public.dim_customer` c
+  `analytics.dim_customer` c
 USING
   (
     SELECT
@@ -84,7 +84,7 @@ THEN
   );
 
 MERGE
-  `public.dim_order` o
+  `analytics.dim_order` o
 USING
   (
     SELECT
@@ -106,7 +106,7 @@ THEN
     CAST(n.order_id AS INTEGER),
     n.order_date,
     n.order_status
-  )
+  );
 
 -- Answering the Question
   
@@ -119,13 +119,13 @@ SELECT
   o.order_status,
   o.order_date
 FROM
-  `public.fact_payment` f
+  `analytics.fact_payment` f
 JOIN
-  `public.dim_customer` u
+  `analytics.dim_customer` u
 ON
   f.user_id = u.user_id
 JOIN
-  `public.dim_order` o
+  `analytics.dim_order` o
 ON
   f.order_id = o.order_id
 WHERE
