@@ -1,4 +1,4 @@
--- Denormalization: Fact and Dimension Tables
+-- Denormalization: Create fact and dimension tables
 
 CREATE TABLE IF NOT EXISTS `analytics.fact_payment` (
     payment_id INTEGER,
@@ -20,7 +20,17 @@ CREATE TABLE IF NOT EXISTS `analytics.dim_order` (
     order_status STRING
 );
 
--- Data Transformation (using Merge)
+-- Data Transformation (using INSERT) => This causes duplicate date!
+
+INSERT INTO
+  `analytics.dim_customer`
+SELECT
+  CAST(id AS INT64) AS user_id,
+  CONCAT(first_name, ' ', last_name) AS name
+FROM
+  `public.jaffle_shop_customer`
+
+-- Data Transformation (using MERGE)
 
 MERGE
   `analytics.fact_payment` f
@@ -108,8 +118,8 @@ THEN
     n.order_status
   );
 
--- Answering the Question
-  
+-- Answer the question
+
 SELECT
   u.name,
   f.amount,
